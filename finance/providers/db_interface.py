@@ -1,6 +1,43 @@
 from users.providers import db_interface as users_db_interface
 from finance.models import PaymentSystemTransaction, Transaction
 
+'''
+TODO to complete interface it is better to return custom object Transaction / Payment System Transaction
+instead of Django ORM Models
+
+Better would be, but TBD: 
+
+class DB_Transaction:
+    ModelClass = Transaction  # app / models 
+    BusinessEntity = PowerPointsTransaction # app / domain / business entities
+    
+    def model_to_entity(model_obj): 
+        # iter through model fields and map into BusinessEntity
+        pass
+        
+    def entity_to_model(entity_obj):
+        # iter through entity fields and map into ModelClass
+        pass
+    
+class Selector(DB_Transaction):
+    
+     @staticmethod
+     def get_transaction_by_id():
+        transaction = self.ModelClass.objects.get(id=transaction_id)
+        pp_transaction = self.model_to_entity(transaction) # try to replace with 
+        return pp_transaction
+
+class Updater(DB_Transaction):
+    selector_class = Selector
+    
+     @staticmethod
+     def get_transaction_by_id():
+        transaction = self.ModelClass.objects.get(id=transaction_id)
+        pp_transaction = self.model_to_entity(transaction) # try to replace with 
+        return pp_transaction
+                
+
+'''
 
 class DB_Creator:
 

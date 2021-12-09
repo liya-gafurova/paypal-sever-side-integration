@@ -35,11 +35,12 @@ def create_purchase_order(user_id, power_points_amount: int):
     return created_order_response.order_id
 
 
-def created_order_is_same_as_captured_order(capture_response: CaptureOrderResponse,
-                                            created_order_transaction: PaymentSystemTransaction):
+def _created_order_is_same_as_captured_order(capture_response: CaptureOrderResponse,
+                                             created_order_transaction: PaymentSystemTransaction):
     '''
-    :return: True id created order in paypal has the same value and amount after User`s approving and payment, else False
+    :return: True if created order in paypal has the same value and amount after User`s approving payment, else False
     '''
+
     return capture_response.currency_code == created_order_transaction.money_currency \
            and capture_response.actual_amount == created_order_transaction.money_amount
 
@@ -50,7 +51,7 @@ def capture_purchase_status(payment_id):
     captured_order_response: CaptureOrderResponse = payment_system.check_payment(payment_id)
     created_order_paypal_transaction = DB_Selector.get_payment_transaction_by_order_id(captured_order_response.order_id)
 
-    if created_order_is_same_as_captured_order(captured_order_response, created_order_paypal_transaction):
+    if _created_order_is_same_as_captured_order(captured_order_response, created_order_paypal_transaction):
         if captured_order_response.status == PaymentSystemTransactionStatus.COMPLETED.value:
             # update payment system transaction
             updated_ps_transaction: PaymentSystemTransaction = DB_Updater.update_payment_transaction_status(

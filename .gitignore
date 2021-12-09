@@ -130,6 +130,6 @@ dmypy.json
 .pyre/
 
 # project files
-index.html
+index2.html
 static
 .idea
