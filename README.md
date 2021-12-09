@@ -40,4 +40,3 @@ https://developer.paypal.com/docs/checkout/reference/server-integration/
 
 add to index.html client_id = client_id (from sandbox.app)
 installed https://pypi.org/project/django-cors-headers/
-token 178c3722504c50d060eb7e32e937ae4b5b0e0cad - user id =2  lia 123123
