@@ -40,3 +40,9 @@ https://developer.paypal.com/docs/checkout/reference/server-integration/
 
 add to index.html client_id = client_id (from sandbox.app)
 installed https://pypi.org/project/django-cors-headers/
+
+
+https://developer.paypal.com/docs/api-basics/notifications/ipn/IPNIntro/ -- Not RealTime Payment Notifications
+https://developer.paypal.com/docs/api-basics/notifications/ipn/IPNPDTAnAlternativetoIPN/ -- You can use IPN with other notification mechanisms. For example, you can use Payment Data Transfer (PDT) or the API to obtain real-time information about a transaction and let IPN notify you of any changes after the transaction occurs.
+
+If you use PayPal Payments Standard, you can use PDT to obtain information about the transaction. If you use Express Checkout or Direct Payment, the PayPal API notifies you of the status and details of the transaction immediately and automatically. In either case, you can immediately show your customer the payment information returned by PayPal . You should not use IPN for this purpose.
