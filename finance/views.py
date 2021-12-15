@@ -3,7 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from finance.serializers import BuyPowerPointsSerializer
-from finance.domain.service import create_purchase_order, capture_purchase_status
+from finance.domain.service import create_purchase_order, capture_purchase_status, \
+     update_payment_transaction_status
 
 
 class PaypalCreateOrder(generics.CreateAPIView):
@@ -32,5 +33,8 @@ class PaypalIPN(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         print('HERE')
         # TODO duplicate checking that is in capture_purchase_status()
+        update_payment_transaction_status(request.data)
+
         print(request.data)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
+

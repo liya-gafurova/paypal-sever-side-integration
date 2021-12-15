@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
-from django.db.models import ForeignKey, FloatField, DateTimeField, JSONField, CharField, IntegerField
+from django.db.models import ForeignKey, FloatField, DateTimeField, JSONField, CharField, IntegerField, SET_NULL
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from ruamel.yaml import timestamp
 
 from finance.domain.business_rules import TransactionTypes
@@ -30,6 +32,7 @@ TRANSACTION_DESCRIPTION_FIELD_SCHEMA = {
 
 UserModel = get_user_model()
 
+
 def validate_json_filed(value):
     try:
         validate(value, TRANSACTION_DESCRIPTION_FIELD_SCHEMA)
@@ -47,17 +50,22 @@ class Transaction(models.Model):
 
 
 class PaymentSystemTransaction(models.Model):
-    user = ForeignKey(UserModel, null = True,on_delete=models.SET_NULL)
+    user = ForeignKey(UserModel, null=True, on_delete=models.SET_NULL)
     order_id = CharField(max_length=50, null=True)
     capture_id = CharField(max_length=50, null=True)
 
-    money_amount=FloatField()
+    money_amount = FloatField()
     money_currency = CharField(max_length=10)
 
     pp_amount = IntegerField()
 
-    status=CharField(max_length=50)
+    status = CharField(max_length=50)
 
     timestamp = DateTimeField(auto_now_add=True)
 
 
+class IPNNotifications(models.Model):
+    payment = ForeignKey(PaymentSystemTransaction, null=True, on_delete=SET_NULL)
+    order_id = CharField(max_length=50, null=True)
+    status = CharField(max_length=50)
+    notification_data = JSONField()

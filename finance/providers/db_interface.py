@@ -75,3 +75,8 @@ class DB_Selector:
     def get_payment_transaction_by_order_id(order_id) -> PaymentSystemTransaction:
         ps_transaction = PaymentSystemTransaction.objects.get(order_id=order_id)
         return ps_transaction
+
+    @staticmethod
+    def get_uncaptured_payments():
+        uncaptured_orders = PaymentSystemTransaction.objects.filter(capture_id__isnull=True)
+        return uncaptured_orders
