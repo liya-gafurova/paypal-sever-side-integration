@@ -1,12 +1,8 @@
-from dataclasses import dataclass
-from typing import List
-
 from finance.domain.business_rules import PP_USD, USD, USD_VALUE_DECIMAL_PLACES, DOLLARS_PER_POWER_POINT, \
     TransactionTypes, PaymentSystemTransactionStatus
 from finance.models import PaymentSystemTransaction, Transaction
 from finance.providers.db_interface import DB_Creator, DB_Selector, DB_Updater
-from finance.providers.paypal import PaypalIPNStatus, PaypalPaymentStatus, IPN_Paypal_status_mapping
-from finance.providers.ps_interface import PaymentInterface, UserPaymentOrder, CreateOrderResponse, CaptureOrderResponse
+from finance.providers.ps_interface import *
 
 
 def _get_dollars(power_points_amount):
@@ -61,19 +57,7 @@ def capture_purchase_status(payment_id):
                 captured_order_response.capture_id,
                 captured_order_response.status)
 
-            # add pp transaction
-            transaction_metadata: dict = {
-                'message': f'User bought {updated_ps_transaction.pp_amount} PowerPoints with '
-                           f'{updated_ps_transaction.money_amount} {updated_ps_transaction.money_currency} '
-                           f'via PayPal payment system.',
-                'data': {
-                    'money_spent': updated_ps_transaction.money_amount,
-                }
-            }
-            pp_transaction: Transaction = DB_Creator.create_pp_transaction(user=updated_ps_transaction.user,
-                                                                           amount=updated_ps_transaction.pp_amount,
-                                                                           transaction_type=TransactionTypes.BUYING_POWERPOINTS.value,
-                                                                           metadata=transaction_metadata)
+            create_power_points_transaction(updated_ps_transaction)
 
         return captured_order_response.capture_id
 
@@ -81,8 +65,11 @@ def capture_purchase_status(payment_id):
 
 
 def update_payment_transaction_status(paypal_ipn_data: dict):
-    print(paypal_ipn_data.get('event_type', None))
+
+
     ipn_status = paypal_ipn_data.get('event_type', None)
+    print(ipn_status)
+
     if ipn_status == PaypalIPNStatus.COMPLETED.value:
         ccl_user_id = paypal_ipn_data['resource']['custom_id']
         order_id = paypal_ipn_data['resource']['supplementary_data']["related_ids"]["order_id"]
@@ -91,6 +78,7 @@ def update_payment_transaction_status(paypal_ipn_data: dict):
         print(order_paypal_transaction.order_id, order_paypal_transaction.capture_id, order_paypal_transaction.status,)
 
         if order_paypal_transaction.status != IPN_Paypal_status_mapping[ipn_status]:
+            # almost never executed
 
             print('UPDATE VIA IPN DATA')
 
@@ -100,17 +88,21 @@ def update_payment_transaction_status(paypal_ipn_data: dict):
                 paypal_ipn_data['resource']['id'],
                 PaypalPaymentStatus.COMPLETED)
 
-            # add pp transaction
-            transaction_metadata: dict = {
-                'message': f'User bought {updated_ps_transaction.pp_amount} PowerPoints with '
-                           f'{updated_ps_transaction.money_amount} {updated_ps_transaction.money_currency} '
-                           f'via PayPal payment system.',
-                'data': {
-                    'money_spent': updated_ps_transaction.money_amount,
-                }
-            }
-            pp_transaction: Transaction = DB_Creator.create_pp_transaction(user=updated_ps_transaction.user,
-                                                                           amount=updated_ps_transaction.pp_amount,
-                                                                           transaction_type=TransactionTypes.BUYING_POWERPOINTS.value,
-                                                                           metadata=transaction_metadata)
+            create_power_points_transaction(updated_ps_transaction)
 
+
+def create_power_points_transaction(completed_paypal_transaction: PaymentSystemTransaction):
+    # add power_points transaction
+    transaction_metadata: dict = {
+        'message': f'User bought {completed_paypal_transaction.pp_amount} PowerPoints with '
+                   f'{completed_paypal_transaction.money_amount} {completed_paypal_transaction.money_currency} '
+                   f'via PayPal payment system.',
+        'data': {
+            'money_spent': completed_paypal_transaction.money_amount,
+        }
+    }
+    pp_transaction: Transaction = DB_Creator.create_pp_transaction(user=completed_paypal_transaction.user,
+                                                                   amount=completed_paypal_transaction.pp_amount,
+                                                                   transaction_type=TransactionTypes.BUYING_POWERPOINTS.value,
+                                                                   metadata=transaction_metadata)
+    return pp_transaction

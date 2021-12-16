@@ -18,6 +18,8 @@ https://www.sandbox.paypal.com/ login page
 
 4. Create APP in paypal sandbox account 
 
+add to index.html client_id = client_id (from sandbox.app)
+installed https://pypi.org/project/django-cors-headers/
 
 
 IPN: PayPal can send notifications, that business-account got a new payment
@@ -28,19 +30,12 @@ READ the https://developer.paypal.com/docs/checkout/
 Links: 
 https://developer.paypal.com/docs/checkout/reference/server-integration/setup-sdk/
 https://github.com/paypal/Checkout-Python-SDK
-
-
 https://stackoverflow.com/questions/67656674/paypal-server-side-integration-in-python
 https://developer.paypal.com/demo/checkout/#/pattern/server
-
 https://developer.paypal.com/docs/api/orders/v2/
 https://developer.paypal.com/docs/checkout/reference/server-integration/setup-sdk/
 https://developer.paypal.com/docs/checkout/reference/upgrade-integration/
 https://developer.paypal.com/docs/checkout/reference/server-integration/
-
-add to index.html client_id = client_id (from sandbox.app)
-installed https://pypi.org/project/django-cors-headers/
-
 
 https://developer.paypal.com/docs/api-basics/notifications/ipn/IPNIntro/ -- Not RealTime Payment Notifications
 https://developer.paypal.com/docs/api-basics/notifications/ipn/IPNPDTAnAlternativetoIPN/ -- You can use IPN with other notification mechanisms. For example, you can use Payment Data Transfer (PDT) or the API to obtain real-time information about a transaction and let IPN notify you of any changes after the transaction occurs.

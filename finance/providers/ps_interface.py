@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 
 from finance.providers.paypal import PaypalCreateOrder, PaypalCaptureOrder
 
@@ -30,6 +31,24 @@ class CaptureOrderResponse:
     user_id: int
     actual_amount: float
     currency_code: str
+
+
+class PaypalIPNStatus(Enum):
+    COMPLETED = 'PAYMENT.CAPTURE.COMPLETED'
+    APPROVED = 'CHECKOUT.ORDER.APPROVED'
+
+
+class PaypalPaymentStatus(Enum):
+    CREATED = 'CREATED'
+    COMPLETED = "COMPLETED"
+
+
+IPN_Paypal_status_mapping = {
+    PaypalIPNStatus.COMPLETED.value : PaypalPaymentStatus.COMPLETED.value,
+}
+Paypal_IPN_status_mapping = {
+    PaypalPaymentStatus.COMPLETED.value : PaypalIPNStatus.COMPLETED.value,
+}
 
 
 class PaymentInterface:

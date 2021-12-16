@@ -1,74 +1,9 @@
 import json
 import sys
-from enum import Enum
-from urllib.parse import quote
 
 from django.conf import settings
 from paypalcheckoutsdk.core import SandboxEnvironment, PayPalHttpClient
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
-
-
-class PaypalIPNStatus(Enum):
-    COMPLETED = 'PAYMENT.CAPTURE.COMPLETED'
-    APPROVED = 'CHECKOUT.ORDER.APPROVED'
-
-
-class PaypalPaymentStatus(Enum):
-    CREATED = 'CREATED'
-    COMPLETED = "COMPLETED"
-
-
-IPN_Paypal_status_mapping = {
-    PaypalIPNStatus.COMPLETED.value : PaypalPaymentStatus.COMPLETED.value,
-}
-Paypal_IPN_status_mapping = {
-    PaypalPaymentStatus.COMPLETED.value : PaypalIPNStatus.COMPLETED.value,
-}
-
-
-# class OrdersCreateRequest:
-#     """
-#     Creates an order.
-#     """
-#
-#     def __init__(self):
-#         self.verb = "POST"
-#         self.path = "/v2/checkout/orders?"
-#         self.headers = {}
-#         self.headers["Content-Type"] = "application/json"
-#         self.body = None
-#
-#     def pay_pal_partner_attribution_id(self, pay_pal_partner_attribution_id):
-#         self.headers["PayPal-Partner-Attribution-Id"] = str(pay_pal_partner_attribution_id)
-#
-#     def prefer(self, prefer):
-#         self.headers["Prefer"] = str(prefer)
-#
-#     def request_body(self, order):
-#         self.body = order
-#         return self
-#
-#
-# class OrdersCaptureRequest:
-#     """
-#     Captures a payment for an order.
-#     """
-#
-#     def __init__(self, order_id):
-#         self.verb = "POST"
-#         self.path = "/v2/checkout/orders/{order_id}/capture?".replace("{order_id}", quote(str(order_id)))
-#         self.headers = {}
-#         self.headers["Content-Type"] = "application/json"
-#         self.body = None
-#
-#     def pay_pal_client_metadata_id(self, pay_pal_client_metadata_id):
-#         self.headers["PayPal-Client-Metadata-Id"] = str(pay_pal_client_metadata_id)
-#
-#     def pay_pal_request_id(self, pay_pal_request_id):
-#         self.headers["PayPal-Request-Id"] = str(pay_pal_request_id)
-#
-#     def prefer(self, prefer):
-#         self.headers["Prefer"] = str(prefer)
 
 
 class PayPalClient:

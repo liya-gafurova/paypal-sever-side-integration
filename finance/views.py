@@ -31,10 +31,7 @@ class PaypalIPN(generics.CreateAPIView):
     permission_classes = (AllowAny, )
 
     def post(self, request, *args, **kwargs):
-        print('HERE')
-        # TODO duplicate checking that is in capture_purchase_status()
         update_payment_transaction_status(request.data)
-
         print(request.data)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 

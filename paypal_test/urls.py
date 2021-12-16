@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from finance.urls import paypal_url_patterns
+from finance.urls import finance_url_patterns
 from paypal_test.swagger import swagger_urls, decorated_login_view
 
 urlpatterns = [
@@ -31,7 +31,7 @@ urlpatterns = [
         url(r'^api/v1/auth/registration/', include('rest_auth.registration.urls')),
         *swagger_urls,
 
-        *paypal_url_patterns,
+        *finance_url_patterns,
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 print(urlpatterns)
